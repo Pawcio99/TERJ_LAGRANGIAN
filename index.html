@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERJ · Lagrangian · Funkcjonał Działania</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #10101a;
+  --bg3: #16162a;
+  --surface: #1e1e35;
+  --border: rgba(160,160,220,0.12);
+  --border-bright: rgba(160,160,220,0.3);
+  --text: #e8e8f0;
+  --text-muted: #8888aa;
+  --text-dim: #4a4a6a;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.15);
+  --teal: #4ecdc4;
+  --teal-dim: rgba(78,205,196,0.12);
+  --purple: #9b72cf;
+  --purple-dim: rgba(155,114,207,0.12);
+  --coral: #e07560;
+  --coral-dim: rgba(224,117,96,0.12);
+  --blue: #5b9bd5;
+  --green: #7ec8a0;
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font-body: 'Crimson Pro', Georgia, serif;
+  --font-mono: 'Space Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:18px;line-height:1.75;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 3rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:rgba(10,10,15,0.85);backdrop-filter:blur(12px);}
+.nav-logo{font-family:var(--font-mono);font-size:12px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 3rem 4rem;position:relative;border-bottom:1px solid var(--border);}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.4;pointer-events:none;}
+.hero-label{font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:2.5rem;}
+.hero-title{font-family:var(--font-serif);font-size:clamp(2.5rem,6vw,5rem);font-weight:400;line-height:1.05;max-width:900px;margin-bottom:1.5rem;}
+.hero-title em{color:var(--teal);font-style:italic;}
+.hero-sub{font-size:1.15rem;color:var(--text-muted);max-width:600px;line-height:1.7;margin-bottom:3rem;}
+.hero-eq-row{font-family:var(--font-mono);font-size:.75rem;color:var(--text-dim);display:flex;flex-wrap:wrap;gap:1.5rem;border-top:1px solid var(--border);padding-top:2rem;max-width:900px;}
+.hero-eq-row span{color:var(--teal);}
+
+section{padding:6rem 3rem;border-bottom:1px solid var(--border);position:relative;}
+.sec-num{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:3rem;display:flex;align-items:center;gap:1rem;}
+.sec-num::after{content:'';flex:1;height:1px;background:var(--border);max-width:200px;}
+.sec-title{font-family:var(--font-serif);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:400;margin-bottom:1rem;line-height:1.15;}
+.sec-sub{font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem;}
+.prose{max-width:680px;font-size:1.05rem;line-height:1.8;color:#c8c8d8;}
+.prose+.prose{margin-top:1.5rem;}
+
+/* ── LAGRANGIAN DISPLAY ──────────────────────────── */
+.lagrangian-full{background:var(--bg2);border:1px solid var(--border);padding:2.5rem;max-width:960px;margin:3rem 0;overflow-x:auto;}
+.lag-header{font-family:var(--font-mono);font-size:10px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:2rem;display:flex;align-items:center;gap:1rem;}
+.lag-header::after{content:'';flex:1;height:1px;background:var(--border);}
+.lag-row{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.lag-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.lag-sign{font-family:var(--font-mono);font-size:1.2rem;color:var(--text-dim);min-width:24px;text-align:center;}
+.lag-term{font-family:var(--font-mono);font-size:.85rem;color:var(--text);flex:1;line-height:1.7;}
+.lag-term .v{color:var(--teal);}
+.lag-term .op{color:var(--gold);}
+.lag-term .c{color:var(--purple);}
+.lag-label{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:.1em;min-width:160px;text-align:right;}
+
+/* ── TERM CARDS ──────────────────────────────────── */
+.term-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:3rem;}
+.term-card{border:1px solid var(--border);padding:1.75rem;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.term-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;transition:opacity .3s;opacity:.3;}
+.term-card:hover{border-color:var(--border-bright);transform:translateY(-2px);}
+.term-card:hover::before{opacity:1;}
+.term-card.active{border-color:var(--border-bright);}
+.term-card.active::before{opacity:1;}
+.tc-kin::before{background:var(--teal);}
+.tc-met::before{background:var(--gold);}
+.tc-pot::before{background:var(--coral);}
+.tc-nar::before{background:var(--purple);}
+.tc-veil::before{background:var(--blue);}
+.tc-kin.active{background:var(--teal-dim);}
+.tc-met.active{background:var(--gold-dim);}
+.tc-pot.active{background:var(--coral-dim);}
+.tc-nar.active{background:var(--purple-dim);}
+.tc-veil.active{background:rgba(91,155,213,.1);}
+
+.tc-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem;}
+.tc-name{font-family:var(--font-serif);font-size:1.1rem;margin-bottom:.5rem;}
+.tc-kin .tc-name{color:var(--teal);}
+.tc-met .tc-name{color:var(--gold);}
+.tc-pot .tc-name{color:var(--coral);}
+.tc-nar .tc-name{color:var(--purple);}
+.tc-veil .tc-name{color:var(--blue);}
+.tc-formula{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);line-height:1.7;}
+
+/* ── DETAIL PANEL ──────────────────────────────── */
+.term-detail{background:var(--bg2);border:1px solid var(--border);padding:2.5rem;margin-top:2rem;min-height:220px;transition:opacity .3s;}
+.td-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.5rem;}
+.td-title{font-family:var(--font-serif);font-size:1.5rem;margin-bottom:.3rem;}
+.td-body{font-size:1rem;line-height:1.8;color:#b0b0c8;margin-top:1.5rem;}
+.td-formula{font-family:var(--font-mono);font-size:12px;background:var(--bg3);border:1px solid var(--border);padding:1rem 1.25rem;margin:1.2rem 0;color:var(--text-muted);line-height:1.9;}
+.td-formula .h{color:var(--teal);}
+.td-formula .g{color:var(--gold);}
+.td-formula .p{color:var(--purple);}
+
+/* ── CANVAS SECTION ──────────────────────────────── */
+.canvas-box{background:var(--bg2);border:1px solid var(--border);padding:2rem;margin-top:3rem;}
+.cb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.cb-title{font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;}
+.cb-controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;}
+.ctrl-btn{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:.35rem .8rem;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;}
+.ctrl-btn:hover,.ctrl-btn.active{color:var(--text);border-color:var(--border-bright);background:rgba(255,255,255,.04);}
+.ctrl-slider{display:flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:10px;color:var(--text-dim);}
+.ctrl-slider input[type=range]{width:100px;accent-color:var(--teal);}
+canvas.viz{width:100%;display:block;}
+
+/* ── EQUATIONS OF MOTION ──────────────────────────── */
+.eom-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem;}
+.eom-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;}
+.eom-title{font-family:var(--font-mono);font-size:10px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem;}
+.eom-eq{font-family:var(--font-mono);font-size:12px;line-height:2;color:var(--text);}
+.eom-eq .h{color:var(--teal);}
+.eom-eq .g{color:var(--gold);}
+.eom-eq .p{color:var(--purple);}
+.eom-eq .comment{color:var(--text-dim);font-size:11px;}
+.eom-interp{font-size:.9rem;color:#9898b0;margin-top:1rem;line-height:1.7;}
+
+/* ── SPECIAL STATES ──────────────────────────────── */
+.states-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;border:1px solid var(--border);margin-top:3rem;}
+.state-card{padding:1.75rem;background:var(--bg2);}
+.state-card+.state-card{border-left:1px solid var(--border);}
+.state-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;}
+.state-name{font-family:var(--font-serif);font-size:1.1rem;margin-bottom:.75rem;}
+.state-tohu .state-label{color:var(--text-dim);}
+.state-or .state-label{color:var(--gold);}
+.state-veil .state-label{color:var(--blue);}
+.state-free .state-label{color:var(--teal);}
+.state-tohu .state-name{color:#6a6a8a;}
+.state-or .state-name{color:var(--gold);}
+.state-veil .state-name{color:var(--blue);}
+.state-free .state-name{color:var(--teal);}
+.state-eq{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);line-height:1.9;padding:.75rem;background:var(--bg3);}
+
+.discovery-box{border-left:2px solid var(--gold);padding:1.5rem 2rem;background:var(--gold-dim);margin:3rem 0;max-width:680px;}
+.discovery-box p{font-family:var(--font-body);font-size:1.05rem;color:var(--text);font-style:italic;line-height:1.75;}
+.discovery-label{font-family:var(--font-mono);font-size:10px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem;}
+
+blockquote{border-left:2px solid var(--teal);padding:1.25rem 2rem;margin:2.5rem 0;max-width:680px;}
+blockquote p{font-family:var(--font-serif);font-size:1.1rem;font-style:italic;color:var(--text-muted);line-height:1.7;}
+blockquote cite{display:block;margin-top:.75rem;font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:.1em;font-style:normal;}
+
+.diamond-divider{text-align:center;padding:2rem;color:var(--gold);font-size:.8rem;letter-spacing:.3em;}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem;}
+  .hero,.hero{padding:6rem 1.5rem 3rem;}
+  section{padding:4rem 1.5rem;}
+  .eom-grid{grid-template-columns:1fr;}
+  .states-grid{grid-template-columns:1fr;}
+  .state-card+.state-card{border-left:none;border-top:1px solid var(--border);}
+  .nav-links{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">TERJ · Lagrangian</div>
+  <ul class="nav-links">
+    <li><a href="#lagrangian">Lagrangian</a></li>
+    <li><a href="#masah">Masah</a></li>
+    <li><a href="#veil">Zasłona</a></li>
+    <li><a href="#eom">Równania Ruchu</a></li>
+    <li><a href="https://pawcio99.github.io/KOMENT_TERJ/">↗ TERJ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div style="position:relative;z-index:1;">
+    <div class="hero-label">TERJ Working Paper · Kwiecień 2026 · Funkcjonał Działania</div>
+    <h1 class="hero-title">Lagrangian <em>TERJ</em><br>— funkcjonał działania</h1>
+    <p class="hero-sub">Zbieramy pięć warstw modelu poznawczego w jeden spójny formalizm: kinetykę relacyjną, dynamikę metryki języka, potencjał Masah, koszt dekoherencji, dynamikę narracji i mechanizm zasłony.</p>
+    <div class="hero-eq-row">
+      <div>ℒ_TERJ = ℒ_kin <span>+ ℒ_met</span> − ℒ_pot + ℒ_dek + ℒ_nar − ℒ_veil</div>
+      <div>S_TERJ = ∫ ℒ_TERJ √|g| d⁴x</div>
+      <div>‖ψ‖² <span>= M(t)</span> — pojemność relacyjna</div>
+    </div>
+  </div>
+</section>
+
+<!-- LAGRANGIAN SECTION -->
+<section id="lagrangian">
+  <div class="sec-num">I — Pełny Lagrangian</div>
+  <h2 class="sec-title">ℒ_TERJ — pełna postać</h2>
+  <div class="sec-sub">Sześć członów · jeden funkcjonał</div>
+
+  <p class="prose reveal">Definiujemy pole relacyjne ψ(x,t) ∈ ℋ_rel jako sekcję wiązki nad rozmaitością stanów. Jego norma ‖ψ‖² = M(t) to całkowita pojemność relacyjna systemu. Metryka g_μν jest dynamiczna — indukowana przez język L i sama przez niego kształtowana. Pole narracyjne φ(x,t) mierzy dominację narracji N_i.</p>
+
+  <div class="lagrangian-full reveal">
+    <div class="lag-header">Pełny Lagrangian TERJ</div>
+
+    <div class="lag-row">
+      <div class="lag-sign"></div>
+      <div class="lag-term"><span class="op">ℒ_TERJ</span> =</div>
+      <div class="lag-label"></div>
+    </div>
+
+    <div class="lag-row">
+      <div class="lag-sign">+</div>
+      <div class="lag-term">½ <span class="v">g^μν</span> (∂_μ<span class="v"> ψ†</span>)(∂_ν<span class="v"> ψ</span>)</div>
+      <div class="lag-label">kinetyka relacyjna</div>
+    </div>
+
+    <div class="lag-row">
+      <div class="lag-sign">+</div>
+      <div class="lag-term"><span class="op">α</span> R[<span class="v">g</span>] − <span class="op">β</span> (∂_t <span class="v">g_μν</span>)²</div>
+      <div class="lag-label">dynamika metryki / języka</div>
+    </div>
+
+    <div class="lag-row">
+      <div class="lag-sign">−</div>
+      <div class="lag-term">(−<span class="op">μ²</span>‖<span class="v">ψ</span>‖² + <span class="op">λ</span>‖<span class="v">ψ</span>‖⁴)</div>
+      <div class="lag-label">potencjał Masah</div>
+    </div>
+
+    <div class="lag-row">
+      <div class="lag-sign">+</div>
+      <div class="lag-term"><span class="op">γ</span> Tr(<span class="v">ρ</span> log <span class="v">ρ</span>)</div>
+      <div class="lag-label">koszt dekoherencji</div>
+    </div>
+
+    <div class="lag-row">
+      <div class="lag-sign">+</div>
+      <div class="lag-term">½ (∂_t<span class="v"> φ</span>)² − ½ <span class="op">m²_φ</span> <span class="v">φ</span>² − <span class="op">κ</span> <span class="v">φ</span> J(<span class="v">ψ</span>,<span class="v">ρ</span>)</div>
+      <div class="lag-label">dynamika narracji</div>
+    </div>
+
+    <div class="lag-row">
+      <div class="lag-sign">−</div>
+      <div class="lag-term"><span class="op">ε_w</span> <span class="v">φ</span>² <span class="v">g^μν</span> ∂_μ<span class="v">ρ</span> ∂_ν<span class="v">ρ</span></div>
+      <div class="lag-label">zasłona / welon</div>
+    </div>
+
+    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);">
+        S_TERJ = ∫ ℒ_TERJ √|g| d⁴x &nbsp;·&nbsp; 
+        J(ψ,ρ) = Im(ψ† ∂_t ψ) · Tr(ρ²) &nbsp;·&nbsp;
+        czynnik √|g| zapewnia kowariantność względem zmian metryki
+      </div>
+    </div>
+  </div>
+
+  <!-- Term Cards -->
+  <div class="term-grid reveal">
+    <div class="term-card tc-kin" onclick="selectTerm('kin')">
+      <div class="tc-label">Człon I</div>
+      <div class="tc-name">Kinetyka relacyjna</div>
+      <div class="tc-formula">½ g^μν (∂_μψ†)(∂_νψ)</div>
+    </div>
+    <div class="term-card tc-met" onclick="selectTerm('met')">
+      <div class="tc-label">Człon II</div>
+      <div class="tc-name">Dynamika metryki</div>
+      <div class="tc-formula">α R[g] − β(∂_t g_μν)²</div>
+    </div>
+    <div class="term-card tc-pot" onclick="selectTerm('pot')">
+      <div class="tc-label">Człon III</div>
+      <div class="tc-name">Potencjał Masah</div>
+      <div class="tc-formula">−μ²‖ψ‖² + λ‖ψ‖⁴</div>
+    </div>
+    <div class="term-card tc-nar" onclick="selectTerm('nar')">
+      <div class="tc-label">Człon IV+V</div>
+      <div class="tc-name">Narracja + koszt dek.</div>
+      <div class="tc-formula">γTr(ρlogρ) + ½(∂φ)² − κφJ</div>
+    </div>
+    <div class="term-card tc-veil" onclick="selectTerm('veil')">
+      <div class="tc-label">Człon VI</div>
+      <div class="tc-name">Zasłona (Welon)</div>
+      <div class="tc-formula">−ε_w φ² g^μν ∂_μρ ∂_νρ</div>
+    </div>
+  </div>
+
+  <div class="term-detail reveal" id="termDetail">
+    <div class="td-label">Wybierz człon powyżej</div>
+    <h3 class="td-title" style="color:var(--text-muted);">Lagrangian TERJ — szczegóły</h3>
+    <div class="td-body">
+      <p>Kliknij dowolny człon Lagrangianu powyżej, aby zobaczyć jego fizyczną interpretację, wyprowadzenie i znaczenie w kontekście modelu poznawczego TERJ.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MASAH SECTION -->
+<section id="masah">
+  <div class="sec-num">II — Potencjał Masah</div>
+  <h2 class="sec-title reveal">Meksykański kapelusz:<br>niestabilność ψ = 0</h2>
+  <div class="sec-sub">V(ψ) = −μ²‖ψ‖² + λ‖ψ‖⁴ · spontaniczne złamanie symetrii relacyjnej</div>
+
+  <p class="prose reveal">Potencjał relacyjny V(ψ) ma kształt meksykańskiego kapelusza. Dla μ² > 0: minimum nie leży w ψ = 0, lecz na orbicie ‖ψ‖² = μ²/2λ. System spontanicznie wybiera kierunek relacji — nie można pozostać w stanie zerowej relacyjności bez lokalnego maksimum energii. Stan ψ = 0 jest niestabilny.</p>
+
+  <div class="canvas-box reveal">
+    <div class="cb-header">
+      <div class="cb-title">Interaktywna wizualizacja potencjału V(ψ)</div>
+      <div class="cb-controls">
+        <div class="ctrl-slider">
+          <label>μ²</label>
+          <input type="range" id="mu2" min="5" max="60" value="30">
+          <span id="mu2-val" style="min-width:28px;">30</span>
+        </div>
+        <div class="ctrl-slider">
+          <label>λ</label>
+          <input type="range" id="lambda" min="5" max="50" value="20">
+          <span id="lambda-val" style="min-width:28px;">20</span>
+        </div>
+        <button class="ctrl-btn active" id="btn-2d" onclick="setView('2d')">Przekrój 2D</button>
+        <button class="ctrl-btn" id="btn-3d" onclick="setView('3d')">Widok 3D</button>
+      </div>
+    </div>
+    <canvas class="viz" id="masahCanvas" height="360"></canvas>
+    <div id="masah-readout" style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:1rem;display:flex;gap:2rem;flex-wrap:wrap;"></div>
+  </div>
+
+  <div class="discovery-box reveal">
+    <div class="discovery-label">Odkrycie strukturalne</div>
+    <p>λ to koszt nadmiernej ekspansji relacyjnej — przesycenie, utrata własnej struktury. Stan ψ = 0 jest niestabilny: system bez żadnej relacji leży na szczycie potencjału, nie w minimum. To formalizuje Masah precyzyjnie: pojemność relacyjna jest strukturalnie konieczna.</p>
+  </div>
+</section>
+
+<!-- VEIL SECTION -->
+<section id="veil">
+  <div class="sec-num">III — Zasłona i Dyssypacja J_Masah</div>
+  <h2 class="sec-title reveal">Mechanizm zasłony:<br>dyssypacja prądu relacyjnego</h2>
+  <div class="sec-sub">∂_μ J^μ = −Γ(x,t) · Γ = 2ε_w · φ · φ̇ · Tr(|∇ρ|²)</div>
+
+  <p class="prose reveal">Zasłona nie niszczy danych S(t) — zaburza metrykę g_μν przez φ², tłumiąc propagację błędu predykcji ε. Prąd Noether zachowania pojemności relacyjnej J^μ = Im(ψ† ∇^μ ψ) przestaje być zachowany gdy φ ≠ 0. Pojawia się źródło dyssypacji Γ.</p>
+
+  <div class="canvas-box reveal">
+    <div class="cb-header">
+      <div class="cb-title">Dyssypacja M(t) = ‖ψ‖² przy zasłonie</div>
+      <div class="cb-controls">
+        <div class="ctrl-slider">
+          <label>ε_w</label>
+          <input type="range" id="ew" min="1" max="80" value="20">
+          <span id="ew-val" style="min-width:28px;">20</span>
+        </div>
+        <div class="ctrl-slider">
+          <label>φ₀</label>
+          <input type="range" id="phi0" min="1" max="80" value="30">
+          <span id="phi0-val" style="min-width:28px;">30</span>
+        </div>
+        <div class="ctrl-slider">
+          <label>|∇ρ|²</label>
+          <input type="range" id="gradRho" min="1" max="80" value="40">
+          <span id="gradRho-val" style="min-width:28px;">40</span>
+        </div>
+        <button class="ctrl-btn" onclick="resetVeil()">Reset</button>
+      </div>
+    </div>
+    <canvas class="viz" id="veilCanvas" height="300"></canvas>
+    <div id="veil-readout" style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:1rem;display:flex;gap:2rem;flex-wrap:wrap;"></div>
+  </div>
+
+  <div class="discovery-box reveal">
+    <div class="discovery-label">Paradoks zasłony</div>
+    <p>Zasłona działa najsilniej dokładnie wtedy, gdy system jest najbardziej aktywny poznawczo. Intensywne poszukiwanie prawdy przy obecnym φ — wysokie Tr(|∇ρ|²) — generuje maksymalną dyssypację J_Masah. System najbardziej „gotowy na prawdę" jest jednocześnie najbardziej podatny na zasłonę.</p>
+  </div>
+
+  <blockquote class="reveal">
+    <p>System poznawczy jest stabilny dopóki przepływ relacyjny J_Masah przez granicę systemu przewyższa wewnętrzną dyssypację Γ. Gdy narracja zewnętrzna przekroczy próg krytyczny δφ_c, system przechodzi fazowo do nowego atraktora — albo kolapsu, jeśli pojemność relacyjna M wyczerpała się przed osiągnięciem progu.</p>
+    <cite>— Lagrangian TERJ, wyprowadzenie równania transportu dla J_Masah</cite>
+  </blockquote>
+</section>
+
+<!-- EOM SECTION -->
+<section id="eom">
+  <div class="sec-num">IV — Równania Ruchu</div>
+  <h2 class="sec-title reveal">Równania Eulera-Lagrange'a</h2>
+  <div class="sec-sub">Trzy pola: ψ, g_μν, φ</div>
+
+  <p class="prose reveal">Minimalizacja S_TERJ daje trzy sprzężone równania ruchu. Każde opisuje dynamikę jednego pola pod wpływem pozostałych. Kluczowe sprzężenie zwrotne: metryka języka g_μν jest kształtowana przez pola, które sama mierzy.</p>
+
+  <div class="eom-grid reveal">
+    <div class="eom-card">
+      <div class="eom-title">Pole relacyjne ψ</div>
+      <div class="eom-eq">
+        <span class="h">g^μν</span> ∇_μ ∂_ν <span class="h">ψ</span><br>
+        − (−<span class="g">μ²</span> + 2<span class="g">λ</span>‖<span class="h">ψ</span>‖²)<span class="h">ψ</span><br>
+        − <span class="g">κ</span><span class="p">φ</span> · δJ/δ<span class="h">ψ†</span> = 0
+      </div>
+      <p class="eom-interp">Równanie pola relacyjnego: jak system relacji ewoluuje pod wpływem własnego potencjału, krzywizny przestrzeni predykcyjnej i sprzężenia z narracją.</p>
+    </div>
+    <div class="eom-card">
+      <div class="eom-title">Metryka g_μν (język)</div>
+      <div class="eom-eq">
+        <span class="g">α</span> G_μν + <span class="g">β</span> ∂²_t <span class="h">g_μν</span><br>
+        = T_μν[<span class="h">ψ</span>, <span class="h">ρ</span>, <span class="p">φ</span>]
+      </div>
+      <p class="eom-interp">Tensor Einsteina przestrzeni predykcyjnej. Język (metryka) jest kształtowany przez pola, które sam mierzy — nieeliminowalna pętla zwrotna między kategorią a doświadczeniem.</p>
+    </div>
+    <div class="eom-card">
+      <div class="eom-title">Pole narracyjne φ</div>
+      <div class="eom-eq">
+        ∂²_t <span class="p">φ</span> + <span class="g">m²_φ</span> <span class="p">φ</span> =<br>
+        −<span class="g">κ</span> J(<span class="h">ψ</span>,<span class="h">ρ</span>)<br>
+        − 2<span class="g">ε_w</span> <span class="p">φ</span> <span class="h">g^μν</span> ∂_μ<span class="h">ρ</span> ∂_ν<span class="h">ρ</span>
+      </div>
+      <p class="eom-interp">Oscylator wymuszony: narracja oscyluje wokół m_φ, wypychana przez prąd relacyjny J i tłumiona (lub wzmacniana) przez własne sprzężenie z zasłoną.</p>
+    </div>
+    <div class="eom-card">
+      <div class="eom-title">Prąd Noether J_Masah</div>
+      <div class="eom-eq">
+        <span class="h">J^μ_Masah</span> = Im(<span class="h">ψ†</span> ∇^μ <span class="h">ψ</span>)<br><br>
+        ∂_μ <span class="h">J^μ</span> = −Γ(x,t)<br><br>
+        <span class="comment">// Γ = 2ε_w · φ · φ̇ · Tr(|∇ρ|²)</span>
+      </div>
+      <p class="eom-interp">Zachowany prąd pojemności relacyjnej. Złamanie symetrii fazowej przez φ ≠ 0 narusza zachowanie pojemności relacyjnej. To jest sens „gwałtu na rzeczywistości": nie zmiana S(t), lecz złamanie symetrii Noether pola ψ.</p>
+    </div>
+  </div>
+
+  <!-- Special States -->
+  <h3 class="sec-sub" style="margin-top:4rem;">Stany szczególne i ich interpretacja</h3>
+  <div class="states-grid reveal">
+    <div class="state-card state-tohu">
+      <div class="state-label">Stan I</div>
+      <div class="state-name">Tohu wa-bohu</div>
+      <div class="state-eq">g_μν → 0<br>ψ = 0<br>ρ = I/n (max mieszaność)<br><br>Zerowa metryka → brak ε<br>Brak struktury predykcyjnej</div>
+    </div>
+    <div class="state-card state-or">
+      <div class="state-label">Stan II</div>
+      <div class="state-name">Or — pierwsze złamanie</div>
+      <div class="state-eq">g_μν = η_μν + h_μν<br>φ₀ = 0<br>ψ → ‖ψ‖² = μ²/2λ<br><br>ψ = 0 niestabilne<br>Relacja strukturalnie konieczna</div>
+    </div>
+    <div class="state-card state-veil">
+      <div class="state-label">Stan III</div>
+      <div class="state-name">Pełna zasłona</div>
+      <div class="state-eq">φ → ∞, ε_w duże<br>g^μν ∂_μρ → 0<br>Model ρ nie ewoluuje<br><br>System totalitarny:<br>wysoka m_φ, max ε_w, brak J</div>
+    </div>
+    <div class="state-card state-free">
+      <div class="state-label">Stan IV</div>
+      <div class="state-name">Pełna relacja bez zasłony</div>
+      <div class="state-eq">φ → 0, ε_w → 0<br>ρ czyste<br>ψ na orbicie min V<br><br>Max gotowość poznawcza<br>Max koszt dekoherencji</div>
+    </div>
+  </div>
+
+  <div class="discovery-box reveal" style="margin-top:3rem;">
+    <div class="discovery-label">Trzy napięcia strukturalne</div>
+    <p>Relacja jest konieczna (potencjał Masah — niestabilność w ψ = 0), ale kosztowna (dekoherencja pobiera γ S_vN). Język kształtuje metrykę, przez którą mierzone są wszystkie ε — ale równania ruchu g_μν są wyznaczane przez pola, które sam mierzy. Narracja sprzęga się z systemem tym silniej, im czystszy jest stan modelu.</p>
+  </div>
+</section>
+
+<div class="diamond-divider">◈</div>
+
+<section style="padding:3rem;border-bottom:none;">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:2rem;">
+    <div>
+      <div class="nav-logo" style="margin-bottom:.5rem;">TERJ · Lagrangian</div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);">Kwiecień 2026 · Część II z IV</div>
+    </div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+      <a href="index.html" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;">← Model Kognitywny</a>
+      <a href="https://pawcio99.github.io/KOMENT_TERJ/" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;">↗ TERJ Komentarz I–IV</a>
+    </div>
+  </div>
+</section>
+
+<script>
+// ── TERM DETAIL DATA ─────────────────────────────────────────────────────
+const termData = {
+  kin: {
+    color: 'var(--teal)',
+    label: 'Człon I · Kinetyka relacyjna',
+    title: 'ℒ_kin = ½ g^μν (∂_μψ†)(∂_νψ)',
+    body: `<p>Człon kinetyczny opisuje gęstość Lagrangianu dla pola ψ poruszającego się po zakrzywionej przestrzeni predykcyjnej. Krzywizna g_μν nie jest dana z zewnątrz — jest indukowana przez język, więc g samo ewoluuje.</p>
+    <div class="td-formula">
+<span class="h">ψ(x,t)</span> ∈ ℋ_rel — pole pojemności relacyjnej (Masah)<br>
+‖<span class="h">ψ</span>‖² = ⟨<span class="h">ψ</span>|<span class="h">ψ</span>⟩ ≡ M(t) — całkowita pojemność relacyjna<br><br>
+<span class="h">g^μν</span> = metryka przestrzeni predykcyjnej<br>
+Krzywizna g_μν = zakrzywienie przez język L(t)<br><br>
+Człon kinetyczny mówi: <span class="g">jak szybko zmienia się pole relacyjne</span><br>
+w każdym punkcie zakrzywionej przestrzeni modelu
+    </div>
+    <p>Gdy g_μν = η_μν (płaska metryka — spójny język bez narracji dominującej), człon kinetyczny redukuje się do standardowego ½(∂ψ†)(∂ψ) — swobodna propagacja pojemności relacyjnej.</p>`
+  },
+  met: {
+    color: 'var(--gold)',
+    label: 'Człon II · Dynamika metryki',
+    title: 'ℒ_met = α R[g] − β(∂_t g_μν)²',
+    body: `<p>Metryka g_μν jest dynamiczna — to język L(t), który ewoluuje. Człon zawiera skalar krzywizny Ricciego R[g] i koszt gwałtownych zmian metryki.</p>
+    <div class="td-formula">
+<span class="g">α</span> · R[g]: <span class="g">skalar krzywizny Ricciego</span><br>
+System dąży do konfiguracji o minimalnej krzywiźnie wewnętrznej<br>
+= koherencja systemu pojęciowego<br><br>
+−<span class="g">β</span> · (∂_t g_μν)²: <span class="g">koszt rewizji kategorii językowych</span><br>
+System opiera się gwałtownym zmianom metryki<br>
+Inercja pojęciowa — zmiana języka wymaga energii<br><br>
+Stosunek α/β: jak szybko zmiany kategorii propagują się<br>
+w stosunku do ich oporu
+    </div>
+    <p>Równanie ruchu dla metryki: α G_μν + β ∂²_t g_μν = T_μν[ψ, ρ, φ], gdzie G_μν to tensor Einsteina przestrzeni predykcyjnej. Język jest kształtowany przez pola, które sam mierzy.</p>`
+  },
+  pot: {
+    color: 'var(--coral)',
+    label: 'Człon III · Potencjał Masah',
+    title: 'V(ψ) = −μ²‖ψ‖² + λ‖ψ‖⁴',
+    body: `<p>Potencjał meksykańskiego kapelusza. Minimum nie leży w ψ = 0, lecz na orbicie ‖ψ‖² = μ²/2λ. To jest formalizacja Masah: zdolności do wejścia w relację bez utraty własnej struktury.</p>
+    <div class="td-formula">
+Dla <span class="g">μ²</span> > 0: minimum na orbicie ‖ψ‖² = <span class="g">μ²/2λ</span><br><br>
+<span class="h">ψ = 0</span>: lokalne maksimum energii — niestabilne<br>
+System spontanicznie wybiera kierunek relacji<br><br>
+<span class="g">λ</span>: koszt nadmiernej ekspansji relacyjnej<br>
+Przesycenie, utrata własnej struktury<br><br>
+Bozon Goldstone'a π (faza relacyjna) = <span class="g">bezmasowy</span><br>
+→ kierunek relacji propaguje się bez kosztu energetycznego
+    </div>
+    <p>Kluczowy wynik: nie można pozostać w stanie zerowej relacyjności bez lokalnego maksimum energii. Izolacja jest strukturalnie kosztowna — nie przez wybór moralny, lecz przez geometrię przestrzeni stanów.</p>`
+  },
+  nar: {
+    color: 'var(--purple)',
+    label: 'Człon IV+V · Narracja + Dekoherencja',
+    title: 'ℒ_nar + ℒ_dek',
+    body: `<p>Dwa sprzężone człony: entropia von Neumanna jako koszt dekoherencji i dynamika pola narracyjnego φ jako oscylator wymuszony sprzężony z prądem relacyjnym.</p>
+    <div class="td-formula">
+<span class="g">γ</span> Tr(<span class="h">ρ</span> log <span class="h">ρ</span>) = −<span class="g">γ</span> S_vN(<span class="h">ρ</span>)<br>
+System „płaci" za utratę czystości przez wejście w sprzężenie<br>
+Paradoks: dekoherencja kosztowna, ale konieczna do aktualizacji<br><br>
+Pole narracyjne <span class="h">φ</span>:<br>
+½(∂_t <span class="h">φ</span>)² − ½<span class="g">m²_φ</span><span class="h">φ</span>² − <span class="g">κ</span><span class="h">φ</span>J(<span class="h">ψ</span>,<span class="h">ρ</span>)<br><br>
+J(<span class="h">ψ</span>,<span class="h">ρ</span>) = Im(<span class="h">ψ†</span> ∂_t<span class="h">ψ</span>) · Tr(<span class="h">ρ</span>²)<br>
+Narracja sprzęga się silniej gdy pole relacyjne w ruchu<br>
+i gdy model jest „czysty" (Tr(ρ²) → 1)
+    </div>
+    <p>Masa narracyjna m_φ to odwrotność zdolności narracji do zmiany. Wysoka m_φ = sztywna narracja. Prąd J opisuje aktywność systemu — im bardziej aktywny, tym silniej narracja go dosięga.</p>`
+  },
+  veil: {
+    color: 'var(--blue)',
+    label: 'Człon VI · Zasłona',
+    title: 'ℒ_veil = −ε_w φ² g^μν ∂_μρ ∂_νρ',
+    body: `<p>Zasłona nie jest globalnym stanem, lecz lokalnym operatorem na metryce. Gdy pole narracyjne φ jest silne, gradient macierzy gęstości ρ w przestrzeni predykcyjnej zostaje stłumiony — różnice ε przestają „przepływać" przez metrykę do aktualizacji modelu.</p>
+    <div class="td-formula">
+Gdy <span class="h">φ</span> → ∞ i <span class="g">ε_w</span> duże:<br>
+<span class="h">g^μν</span> ∂_μ<span class="h">ρ</span> → 0<br><br>
+System „widzi", ale nie aktualizuje<br>
+ε propaguje się przez ośrodek φ₀ — tłumione i przesunięte fazowo<br><br>
+Krew Kaina woła — ale wołanie przechodzi przez ośrodek φ₀<br>
+Dociera tłumione, zniekształcone przez metrykę kondensatu<br><br>
+Γ(x,t) = 2<span class="g">ε_w</span> · <span class="h">φ</span> · φ̇ · Tr(|∇<span class="h">ρ</span>|²)<br>
+= gęstość dyssypacji relacyjnej
+    </div>
+    <p>Zasłona Pawłowa w tym ujęciu to trwała perturbacja metryki g(L) w warstwie IV — nie niewidomość na S(t), lecz kategorie językowe, które uniemożliwiają pewnym ε dotarcie do aktualizacji modelu.</p>`
+  }
+};
+
+function selectTerm(id) {
+  document.querySelectorAll('.term-card').forEach(c => c.classList.remove('active'));
+  document.querySelector('.tc-' + id).classList.add('active');
+  const d = termData[id];
+  const el = document.getElementById('termDetail');
+  el.querySelector('.td-label').textContent = d.label;
+  el.querySelector('.td-title').textContent = d.title;
+  el.querySelector('.td-title').style.color = d.color;
+  el.querySelector('.td-body').innerHTML = d.body;
+}
+
+// ── MASAH POTENTIAL CANVAS ─────────────────────────────────────────────
+const masahCanvas = document.getElementById('masahCanvas');
+const mCtx = masahCanvas.getContext('2d');
+let masahView = '2d';
+let masahAnim = null;
+let masahAngle = 0;
+
+function setView(v) {
+  masahView = v;
+  document.getElementById('btn-2d').classList.toggle('active', v === '2d');
+  document.getElementById('btn-3d').classList.toggle('active', v === '3d');
+}
+
+function V(psi, mu2, lambda) {
+  return -mu2 * psi * psi + lambda * psi * psi * psi * psi;
+}
+
+function drawMasah() {
+  masahCanvas.width = masahCanvas.offsetWidth;
+  const W = masahCanvas.width, H = masahCanvas.height;
+  const mu2 = parseFloat(document.getElementById('mu2').value);
+  const lam = parseFloat(document.getElementById('lambda').value) / 100;
+  const minR = Math.sqrt(mu2 / (2 * lam));
+
+  mCtx.clearRect(0, 0, W, H);
+  mCtx.fillStyle = '#0a0a0f';
+  mCtx.fillRect(0, 0, W, H);
+
+  if (masahView === '2d') {
+    draw2DPotential(W, H, mu2, lam, minR);
+  } else {
+    draw3DPotential(W, H, mu2, lam, minR);
+    masahAngle += 0.008;
+  }
+
+  const readout = document.getElementById('masah-readout');
+  readout.innerHTML = `
+    <span>μ² = ${mu2}</span>
+    <span style="color:var(--teal)">λ = ${(lam * 100).toFixed(0)}/100</span>
+    <span style="color:var(--coral)">‖ψ‖²_min = ${minR.toFixed(2)}</span>
+    <span style="color:var(--gold)">V_min = ${V(minR, mu2, lam).toFixed(2)}</span>
+    <span style="color:var(--text-dim)">Niestabilność w ψ=0: ${V(0, mu2, lam) > V(minR, mu2, lam) ? 'TAK ✓' : 'NIE'}</span>
+  `;
+
+  masahAnim = requestAnimationFrame(drawMasah);
+}
+
+function draw2DPotential(W, H, mu2, lam, minR) {
+  const cx = W / 2, cy = H / 2;
+  const scale = Math.min(W, H) * 0.35;
+  const vscale = 40;
+
+  // Grid
+  mCtx.strokeStyle = 'rgba(160,160,220,0.06)';
+  mCtx.lineWidth = 1;
+  for (let x = 0; x <= W; x += 40) {
+    mCtx.beginPath(); mCtx.moveTo(x, 0); mCtx.lineTo(x, H); mCtx.stroke();
+  }
+  for (let y = 0; y <= H; y += 40) {
+    mCtx.beginPath(); mCtx.moveTo(0, y); mCtx.lineTo(W, y); mCtx.stroke();
+  }
+
+  // Axes
+  mCtx.strokeStyle = 'rgba(160,160,220,0.2)';
+  mCtx.lineWidth = 1;
+  mCtx.beginPath(); mCtx.moveTo(40, cy); mCtx.lineTo(W - 40, cy); mCtx.stroke();
+  mCtx.beginPath(); mCtx.moveTo(cx, 40); mCtx.lineTo(cx, H - 40); mCtx.stroke();
+
+  // Axis labels
+  mCtx.font = '10px Space Mono, monospace';
+  mCtx.fillStyle = 'rgba(160,160,220,0.4)';
+  mCtx.textAlign = 'center';
+  mCtx.fillText('ψ', W - 30, cy - 8);
+  mCtx.fillText('V(ψ)', cx + 8, 30);
+
+  // Minimum ring markers
+  const minX1 = cx - minR * (scale / (minR + 1) * 1.2);
+  const minX2 = cx + minR * (scale / (minR + 1) * 1.2);
+  const minVY = cy - V(minR, mu2, lam) * vscale;
+  mCtx.strokeStyle = 'rgba(201,168,76,0.3)';
+  mCtx.setLineDash([4, 4]);
+  mCtx.lineWidth = 1;
+  mCtx.beginPath(); mCtx.moveTo(minX1, 0); mCtx.lineTo(minX1, H); mCtx.stroke();
+  mCtx.beginPath(); mCtx.moveTo(minX2, 0); mCtx.lineTo(minX2, H); mCtx.stroke();
+  mCtx.beginPath(); mCtx.moveTo(40, minVY); mCtx.lineTo(W - 40, minVY); mCtx.stroke();
+  mCtx.setLineDash([]);
+
+  // Potential curve
+  const N = 300;
+  const psiMax = minR * 2.5 + 1;
+  mCtx.beginPath();
+  for (let i = 0; i <= N; i++) {
+    const psi = -psiMax + (2 * psiMax * i / N);
+    const vv = V(psi, mu2, lam);
+    const px = cx + psi * (scale / psiMax) * 0.85;
+    const py = cy - vv * vscale;
+    i === 0 ? mCtx.moveTo(px, py) : mCtx.lineTo(px, py);
+  }
+  const grad = mCtx.createLinearGradient(40, 0, W - 40, 0);
+  grad.addColorStop(0, '#e07560');
+  grad.addColorStop(0.5, '#c9a84c');
+  grad.addColorStop(1, '#e07560');
+  mCtx.strokeStyle = grad;
+  mCtx.lineWidth = 2.5;
+  mCtx.stroke();
+
+  // Minimum dots
+  const dotY = cy - V(minR, mu2, lam) * vscale;
+  [minX1, minX2].forEach(mx => {
+    mCtx.beginPath();
+    mCtx.arc(mx, dotY, 5, 0, Math.PI * 2);
+    mCtx.fillStyle = '#c9a84c';
+    mCtx.fill();
+    const gr2 = mCtx.createRadialGradient(mx, dotY, 0, mx, dotY, 15);
+    gr2.addColorStop(0, 'rgba(201,168,76,0.4)');
+    gr2.addColorStop(1, 'transparent');
+    mCtx.beginPath();
+    mCtx.arc(mx, dotY, 15, 0, Math.PI * 2);
+    mCtx.fillStyle = gr2;
+    mCtx.fill();
+  });
+
+  // ψ=0 unstable top
+  const topY = cy - V(0, mu2, lam) * vscale;
+  mCtx.beginPath();
+  mCtx.arc(cx, topY, 5, 0, Math.PI * 2);
+  mCtx.fillStyle = '#e07560';
+  mCtx.fill();
+
+  // Labels
+  mCtx.font = '10px Space Mono, monospace';
+  mCtx.fillStyle = 'rgba(201,168,76,0.8)';
+  mCtx.textAlign = 'center';
+  mCtx.fillText('minimum (Masah)', minX2 + 55, dotY - 10);
+  mCtx.fillStyle = 'rgba(224,117,96,0.8)';
+  mCtx.fillText('niestabilne ψ=0', cx + 70, topY - 10);
+
+  // Orbit arc
+  mCtx.strokeStyle = 'rgba(201,168,76,0.15)';
+  mCtx.lineWidth = 1;
+  mCtx.setLineDash([3, 5]);
+  mCtx.beginPath();
+  mCtx.arc(cx, dotY, Math.abs(minX2 - cx), 0, Math.PI * 2);
+  mCtx.stroke();
+  mCtx.setLineDash([]);
+}
+
+function draw3DPotential(W, H, mu2, lam, minR) {
+  const cx = W / 2, cy = H * 0.55;
+  const N = 48;
+  const psiMax = minR * 2.2 + 0.5;
+
+  const cos = Math.cos(masahAngle), sin = Math.sin(masahAngle);
+
+  function project(x, y, z) {
+    const rx = x * cos - y * sin;
+    const ry = x * sin + y * cos;
+    const scale = 160 / (H * 0.6);
+    return {
+      sx: cx + rx * W * 0.28,
+      sy: cy - ry * H * 0.12 - z * H * 0.15
+    };
+  }
+
+  // Compute mesh
+  const mesh = [];
+  for (let i = 0; i <= N; i++) {
+    mesh[i] = [];
+    for (let j = 0; j <= N; j++) {
+      const px = -psiMax + 2 * psiMax * i / N;
+      const py = -psiMax + 2 * psiMax * j / N;
+      const r2 = px * px + py * py;
+      const vv = -mu2 * r2 + lam * r2 * r2;
+      const normV = vv / (mu2 * mu2 / lam);
+      mesh[i][j] = { x: px / psiMax, y: py / psiMax, z: normV, v: vv };
+    }
+  }
+
+  // Draw quads back to front
+  const quads = [];
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const pts = [mesh[i][j], mesh[i+1][j], mesh[i+1][j+1], mesh[i][j+1]];
+      const avgZ = (pts[0].z + pts[1].z + pts[2].z + pts[3].z) / 4;
+      const avgV = (pts[0].v + pts[1].v + pts[2].v + pts[3].v) / 4;
+      quads.push({ pts, avgZ, avgV });
+    }
+  }
+  quads.sort((a, b) => a.avgZ - b.avgZ);
+
+  quads.forEach(q => {
+    const projected = q.pts.map(p => project(p.x, p.y, p.z));
+    mCtx.beginPath();
+    mCtx.moveTo(projected[0].sx, projected[0].sy);
+    for (let k = 1; k < 4; k++) mCtx.lineTo(projected[k].sx, projected[k].sy);
+    mCtx.closePath();
+
+    const t = Math.max(0, Math.min(1, (q.avgV + mu2 * mu2 / lam) / (mu2 * mu2 / lam * 2)));
+    const r = Math.round(78 + (224 - 78) * t);
+    const g = Math.round(205 - 88 * t);
+    const b = Math.round(196 - 100 * t);
+    mCtx.fillStyle = `rgba(${r},${g},${b},0.35)`;
+    mCtx.fill();
+    mCtx.strokeStyle = `rgba(${r},${g},${b},0.15)`;
+    mCtx.lineWidth = 0.5;
+    mCtx.stroke();
+  });
+
+  // Minimum ring
+  mCtx.strokeStyle = 'rgba(201,168,76,0.6)';
+  mCtx.lineWidth = 2;
+  mCtx.beginPath();
+  for (let k = 0; k <= 64; k++) {
+    const a = k / 64 * Math.PI * 2;
+    const rx = (minR / psiMax) * Math.cos(a);
+    const ry = (minR / psiMax) * Math.sin(a);
+    const rz = V(minR, mu2, lam) / (mu2 * mu2 / lam);
+    const p = project(rx, ry, rz);
+    k === 0 ? mCtx.moveTo(p.sx, p.sy) : mCtx.lineTo(p.sx, p.sy);
+  }
+  mCtx.stroke();
+}
+
+document.getElementById('mu2').addEventListener('input', e => {
+  document.getElementById('mu2-val').textContent = e.target.value;
+});
+document.getElementById('lambda').addEventListener('input', e => {
+  document.getElementById('lambda-val').textContent = e.target.value;
+});
+
+// ── VEIL DISSIPATION CANVAS ───────────────────────────────────────────────
+const veilCanvas = document.getElementById('veilCanvas');
+const vCtx = veilCanvas.getContext('2d');
+let veilHistory = [];
+let vT = 0;
+
+function resetVeil() {
+  veilHistory = [];
+  vT = 0;
+}
+
+function getGamma() {
+  const ew = parseFloat(document.getElementById('ew').value) / 100;
+  const phi0 = parseFloat(document.getElementById('phi0').value) / 100;
+  const gRho = parseFloat(document.getElementById('gradRho').value) / 100;
+  return 2 * ew * phi0 * phi0 * gRho;
+}
+
+function drawVeil() {
+  veilCanvas.width = veilCanvas.offsetWidth;
+  const W = veilCanvas.width, H = veilCanvas.height;
+  const gamma = getGamma();
+  const tau = gamma > 0.001 ? 1 / gamma : 9999;
+  const M0 = 1.0;
+  const dt = 0.02;
+
+  vT += dt;
+  const M = M0 * Math.exp(-gamma * vT);
+  veilHistory.push({ t: vT, M: M });
+  if (veilHistory.length > 400) veilHistory.shift();
+
+  vCtx.clearRect(0, 0, W, H);
+  vCtx.fillStyle = '#0a0a0f';
+  vCtx.fillRect(0, 0, W, H);
+
+  // Grid
+  vCtx.strokeStyle = 'rgba(160,160,220,0.06)';
+  vCtx.lineWidth = 1;
+  for (let x = 0; x <= W; x += 50) { vCtx.beginPath(); vCtx.moveTo(x, 0); vCtx.lineTo(x, H); vCtx.stroke(); }
+  for (let y = 0; y <= H; y += 40) { vCtx.beginPath(); vCtx.moveTo(0, y); vCtx.lineTo(W, y); vCtx.stroke(); }
+
+  // Axes
+  const pad = { l: 60, r: 30, t: 30, b: 50 };
+  const iW = W - pad.l - pad.r, iH = H - pad.t - pad.b;
+  vCtx.strokeStyle = 'rgba(160,160,220,0.25)';
+  vCtx.lineWidth = 1;
+  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t); vCtx.lineTo(pad.l, pad.t + iH); vCtx.stroke();
+  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t + iH); vCtx.lineTo(pad.l + iW, pad.t + iH); vCtx.stroke();
+
+  // Axis labels
+  vCtx.font = '10px Space Mono, monospace';
+  vCtx.fillStyle = 'rgba(160,160,220,0.4)';
+  vCtx.textAlign = 'center';
+  vCtx.fillText('t', pad.l + iW, pad.t + iH + 20);
+  vCtx.textAlign = 'right';
+  vCtx.fillText('M(t)', pad.l - 8, pad.t + 8);
+  vCtx.fillText('1.0', pad.l - 4, pad.t + 16);
+  vCtx.fillText('0', pad.l - 4, pad.t + iH + 2);
+
+  // M=1 line
+  vCtx.strokeStyle = 'rgba(160,160,220,0.12)';
+  vCtx.setLineDash([4, 6]);
+  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t); vCtx.lineTo(pad.l + iW, pad.t); vCtx.stroke();
+  vCtx.setLineDash([]);
+
+  // Tau line
+  if (tau < 80) {
+    const tauX = pad.l + (tau / 80) * iW;
+    vCtx.strokeStyle = 'rgba(201,168,76,0.3)';
+    vCtx.setLineDash([4, 4]);
+    vCtx.beginPath(); vCtx.moveTo(tauX, pad.t); vCtx.lineTo(tauX, pad.t + iH); vCtx.stroke();
+    vCtx.setLineDash([]);
+    vCtx.font = '9px Space Mono, monospace';
+    vCtx.fillStyle = 'rgba(201,168,76,0.6)';
+    vCtx.textAlign = 'center';
+    vCtx.fillText('τ = ' + tau.toFixed(1), tauX, pad.t + iH + 36);
+  }
+
+  // M(t) curve
+  if (veilHistory.length > 1) {
+    const tMax = 80;
+    vCtx.beginPath();
+    veilHistory.forEach((pt, i) => {
+      const px = pad.l + (pt.t / tMax) * iW;
+      const py = pad.t + iH - pt.M * iH;
+      i === 0 ? vCtx.moveTo(px, py) : vCtx.lineTo(px, py);
+    });
+    const lineGrad = vCtx.createLinearGradient(pad.l, 0, pad.l + iW, 0);
+    lineGrad.addColorStop(0, 'rgba(78,205,196,0.9)');
+    lineGrad.addColorStop(0.5, 'rgba(155,114,207,0.7)');
+    lineGrad.addColorStop(1, 'rgba(224,117,96,0.6)');
+    vCtx.strokeStyle = lineGrad;
+    vCtx.lineWidth = 2;
+    vCtx.stroke();
+
+    // Area fill
+    const lastPt = veilHistory[veilHistory.length - 1];
+    const lastX = pad.l + (lastPt.t / tMax) * iW;
+    vCtx.lineTo(lastX, pad.t + iH);
+    vCtx.lineTo(pad.l, pad.t + iH);
+    vCtx.closePath();
+    const fillGrad = vCtx.createLinearGradient(0, pad.t, 0, pad.t + iH);
+    fillGrad.addColorStop(0, 'rgba(78,205,196,0.15)');
+    fillGrad.addColorStop(1, 'rgba(78,205,196,0)');
+    vCtx.fillStyle = fillGrad;
+    vCtx.fill();
+  }
+
+  // Current M readout
+  const curX = pad.l + (vT / 80) * iW;
+  const curY = pad.t + iH - M * iH;
+  if (curX < pad.l + iW) {
+    vCtx.beginPath();
+    vCtx.arc(curX, curY, 5, 0, Math.PI * 2);
+    vCtx.fillStyle = M > 0.5 ? '#4ecdc4' : M > 0.2 ? '#c9a84c' : '#e07560';
+    vCtx.fill();
+  }
+
+  // Update readout
+  const ew = parseFloat(document.getElementById('ew').value);
+  const phi0 = parseFloat(document.getElementById('phi0').value);
+  const gRho = parseFloat(document.getElementById('gradRho').value);
+  document.getElementById('veil-readout').innerHTML = `
+    <span>ε_w = ${ew}/100</span>
+    <span style="color:var(--purple)">φ₀ = ${phi0}/100</span>
+    <span style="color:var(--blue)">|∇ρ|² = ${gRho}/100</span>
+    <span style="color:var(--coral)">Γ₀ = ${(gamma * 100).toFixed(3)}</span>
+    <span style="color:var(--gold)">τ = ${tau < 9999 ? tau.toFixed(2) : '∞'}</span>
+    <span style="color:var(--teal)">M(t) = ${M.toFixed(3)}</span>
+  `;
+
+  if (vT < 80) requestAnimationFrame(drawVeil);
+  else { vT = 0; veilHistory = []; setTimeout(drawVeil, 500); }
+}
+
+['ew', 'phi0', 'gradRho'].forEach(id => {
+  document.getElementById(id).addEventListener('input', e => {
+    document.getElementById(id + '-val').textContent = e.target.value;
+    resetVeil();
+  });
+});
+
+// ── START ─────────────────────────────────────────────────────────────────
+drawMasah();
+drawVeil();
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
