@@ -100,7 +100,7 @@ section{padding:6rem 3rem;border-bottom:1px solid var(--border);position:relativ
 .tc-veil .tc-name{color:var(--blue);}
 .tc-formula{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);line-height:1.7;}
 
-/* ── DETAIL PANEL ──────────────────────────────── */
+/* ── DETAIL PANEL ──────────────────────────────────── */
 .term-detail{background:var(--bg2);border:1px solid var(--border);padding:2.5rem;margin-top:2rem;min-height:220px;transition:opacity .3s;}
 .td-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.5rem;}
 .td-title{font-family:var(--font-serif);font-size:1.5rem;margin-bottom:.3rem;}
@@ -118,7 +118,8 @@ section{padding:6rem 3rem;border-bottom:1px solid var(--border);position:relativ
 .ctrl-btn{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:.35rem .8rem;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;}
 .ctrl-btn:hover,.ctrl-btn.active{color:var(--text);border-color:var(--border-bright);background:rgba(255,255,255,.04);}
 .ctrl-slider{display:flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:10px;color:var(--text-dim);}
-.ctrl-slider input[type=range]{width:100px;accent-color:var(--teal);}
+.ctrl-slider input[type=range]{width:110px;accent-color:var(--teal);}
+.ctrl-slider .val-display{min-width:36px;color:var(--teal);text-align:right;}
 canvas.viz{width:100%;display:block;}
 
 /* ── EQUATIONS OF MOTION ──────────────────────────── */
@@ -210,52 +211,44 @@ blockquote cite{display:block;margin-top:.75rem;font-family:var(--font-mono);fon
 
   <div class="lagrangian-full reveal">
     <div class="lag-header">Pełny Lagrangian TERJ</div>
-
     <div class="lag-row">
       <div class="lag-sign"></div>
       <div class="lag-term"><span class="op">ℒ_TERJ</span> =</div>
       <div class="lag-label"></div>
     </div>
-
     <div class="lag-row">
       <div class="lag-sign">+</div>
       <div class="lag-term">½ <span class="v">g^μν</span> (∂_μ<span class="v"> ψ†</span>)(∂_ν<span class="v"> ψ</span>)</div>
       <div class="lag-label">kinetyka relacyjna</div>
     </div>
-
     <div class="lag-row">
       <div class="lag-sign">+</div>
       <div class="lag-term"><span class="op">α</span> R[<span class="v">g</span>] − <span class="op">β</span> (∂_t <span class="v">g_μν</span>)²</div>
       <div class="lag-label">dynamika metryki / języka</div>
     </div>
-
     <div class="lag-row">
       <div class="lag-sign">−</div>
       <div class="lag-term">(−<span class="op">μ²</span>‖<span class="v">ψ</span>‖² + <span class="op">λ</span>‖<span class="v">ψ</span>‖⁴)</div>
       <div class="lag-label">potencjał Masah</div>
     </div>
-
     <div class="lag-row">
       <div class="lag-sign">+</div>
       <div class="lag-term"><span class="op">γ</span> Tr(<span class="v">ρ</span> log <span class="v">ρ</span>)</div>
       <div class="lag-label">koszt dekoherencji</div>
     </div>
-
     <div class="lag-row">
       <div class="lag-sign">+</div>
       <div class="lag-term">½ (∂_t<span class="v"> φ</span>)² − ½ <span class="op">m²_φ</span> <span class="v">φ</span>² − <span class="op">κ</span> <span class="v">φ</span> J(<span class="v">ψ</span>,<span class="v">ρ</span>)</div>
       <div class="lag-label">dynamika narracji</div>
     </div>
-
     <div class="lag-row">
       <div class="lag-sign">−</div>
       <div class="lag-term"><span class="op">ε_w</span> <span class="v">φ</span>² <span class="v">g^μν</span> ∂_μ<span class="v">ρ</span> ∂_ν<span class="v">ρ</span></div>
       <div class="lag-label">zasłona / welon</div>
     </div>
-
     <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
       <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);">
-        S_TERJ = ∫ ℒ_TERJ √|g| d⁴x &nbsp;·&nbsp; 
+        S_TERJ = ∫ ℒ_TERJ √|g| d⁴x &nbsp;·&nbsp;
         J(ψ,ρ) = Im(ψ† ∂_t ψ) · Tr(ρ²) &nbsp;·&nbsp;
         czynnik √|g| zapewnia kowariantność względem zmian metryki
       </div>
@@ -314,19 +307,19 @@ blockquote cite{display:block;margin-top:.75rem;font-family:var(--font-mono);fon
       <div class="cb-controls">
         <div class="ctrl-slider">
           <label>μ²</label>
-          <input type="range" id="mu2" min="5" max="60" value="30">
-          <span id="mu2-val" style="min-width:28px;">30</span>
+          <input type="range" id="mu2" min="1" max="200" value="30" step="1">
+          <span id="mu2-val" class="val-display">30</span>
         </div>
         <div class="ctrl-slider">
           <label>λ</label>
-          <input type="range" id="lambda" min="5" max="50" value="20">
-          <span id="lambda-val" style="min-width:28px;">20</span>
+          <input type="range" id="lambda" min="1" max="200" value="20" step="1">
+          <span id="lambda-val" class="val-display">20</span>
         </div>
         <button class="ctrl-btn active" id="btn-2d" onclick="setView('2d')">Przekrój 2D</button>
         <button class="ctrl-btn" id="btn-3d" onclick="setView('3d')">Widok 3D</button>
       </div>
     </div>
-    <canvas class="viz" id="masahCanvas" height="360"></canvas>
+    <canvas class="viz" id="masahCanvas" height="420"></canvas>
     <div id="masah-readout" style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:1rem;display:flex;gap:2rem;flex-wrap:wrap;"></div>
   </div>
 
@@ -350,18 +343,18 @@ blockquote cite{display:block;margin-top:.75rem;font-family:var(--font-mono);fon
       <div class="cb-controls">
         <div class="ctrl-slider">
           <label>ε_w</label>
-          <input type="range" id="ew" min="1" max="80" value="20">
-          <span id="ew-val" style="min-width:28px;">20</span>
+          <input type="range" id="ew" min="1" max="200" value="20" step="1">
+          <span id="ew-val" class="val-display">20</span>
         </div>
         <div class="ctrl-slider">
           <label>φ₀</label>
-          <input type="range" id="phi0" min="1" max="80" value="30">
-          <span id="phi0-val" style="min-width:28px;">30</span>
+          <input type="range" id="phi0" min="1" max="200" value="30" step="1">
+          <span id="phi0-val" class="val-display">30</span>
         </div>
         <div class="ctrl-slider">
           <label>|∇ρ|²</label>
-          <input type="range" id="gradRho" min="1" max="80" value="40">
-          <span id="gradRho-val" style="min-width:28px;">40</span>
+          <input type="range" id="gradRho" min="1" max="200" value="40" step="1">
+          <span id="gradRho-val" class="val-display">40</span>
         </div>
         <button class="ctrl-btn" onclick="resetVeil()">Reset</button>
       </div>
@@ -427,7 +420,6 @@ blockquote cite{display:block;margin-top:.75rem;font-family:var(--font-mono);fon
     </div>
   </div>
 
-  <!-- Special States -->
   <h3 class="sec-sub" style="margin-top:4rem;">Stany szczególne i ich interpretacja</h3>
   <div class="states-grid reveal">
     <div class="state-card state-tohu">
@@ -571,29 +563,48 @@ function selectTerm(id) {
   el.querySelector('.td-body').innerHTML = d.body;
 }
 
-// ── MASAH POTENTIAL CANVAS ─────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+// MASAH POTENTIAL CANVAS — fully adaptive scaling
+// ══════════════════════════════════════════════════════════════════════════
 const masahCanvas = document.getElementById('masahCanvas');
 const mCtx = masahCanvas.getContext('2d');
 let masahView = '2d';
-let masahAnim = null;
+let masahAnimId = null;
 let masahAngle = 0;
+let masahDirty = true; // force initial draw
 
 function setView(v) {
   masahView = v;
   document.getElementById('btn-2d').classList.toggle('active', v === '2d');
   document.getElementById('btn-3d').classList.toggle('active', v === '3d');
+  masahDirty = true;
 }
 
 function V(psi, mu2, lambda) {
   return -mu2 * psi * psi + lambda * psi * psi * psi * psi;
 }
 
+function getMasahParams() {
+  const mu2   = parseFloat(document.getElementById('mu2').value);
+  // λ is used directly (not divided by 100 anymore — raw value on [1,200])
+  // To keep physics sensible we scale: effective λ = raw/100 * 0.5 so range is [0.005, 1.0]
+  const lam   = parseFloat(document.getElementById('lambda').value) * 0.005;
+  return { mu2, lam };
+}
+
 function drawMasah() {
-  masahCanvas.width = masahCanvas.offsetWidth;
-  const W = masahCanvas.width, H = masahCanvas.height;
-  const mu2 = parseFloat(document.getElementById('mu2').value);
-  const lam = parseFloat(document.getElementById('lambda').value) / 100;
-  const minR = Math.sqrt(mu2 / (2 * lam));
+  // Sync canvas pixel width to CSS width every frame (handles resize)
+  const cssW = masahCanvas.offsetWidth;
+  if (masahCanvas.width !== cssW) {
+    masahCanvas.width = cssW;
+    masahDirty = true;
+  }
+  const W = masahCanvas.width;
+  const H = masahCanvas.height;
+
+  const { mu2, lam } = getMasahParams();
+  // minR = sqrt(mu2 / (2*lam))
+  const minR = (lam > 0) ? Math.sqrt(mu2 / (2 * lam)) : 1;
 
   mCtx.clearRect(0, 0, W, H);
   mCtx.fillStyle = '#0a0a0f';
@@ -604,336 +615,471 @@ function drawMasah() {
   } else {
     draw3DPotential(W, H, mu2, lam, minR);
     masahAngle += 0.008;
+    masahDirty = true; // keep spinning
   }
 
-  const readout = document.getElementById('masah-readout');
-  readout.innerHTML = `
-    <span>μ² = ${mu2}</span>
-    <span style="color:var(--teal)">λ = ${(lam * 100).toFixed(0)}/100</span>
-    <span style="color:var(--coral)">‖ψ‖²_min = ${minR.toFixed(2)}</span>
-    <span style="color:var(--gold)">V_min = ${V(minR, mu2, lam).toFixed(2)}</span>
-    <span style="color:var(--text-dim)">Niestabilność w ψ=0: ${V(0, mu2, lam) > V(minR, mu2, lam) ? 'TAK ✓' : 'NIE'}</span>
+  // Update readout
+  const minV = V(minR, mu2, lam);
+  const topV = V(0, mu2, lam);
+  document.getElementById('masah-readout').innerHTML = `
+    <span>μ² = ${mu2.toFixed(0)}</span>
+    <span style="color:var(--teal)">λ_eff = ${lam.toFixed(4)}</span>
+    <span style="color:var(--coral)">‖ψ‖²_min = ${minR.toFixed(3)}</span>
+    <span style="color:var(--gold)">V_min = ${minV.toFixed(3)}</span>
+    <span style="color:var(--purple)">V(0) = ${topV.toFixed(3)}</span>
+    <span style="color:var(--text-dim)">Niestabilność ψ=0: ${topV > minV ? 'TAK ✓' : 'NIE'}</span>
   `;
 
-  masahAnim = requestAnimationFrame(drawMasah);
+  if (masahDirty || masahView === '3d') {
+    masahDirty = false;
+    masahAnimId = requestAnimationFrame(drawMasah);
+  } else {
+    // Static view: only redraw on next slider change
+    masahAnimId = null;
+  }
 }
 
-function draw2DPotential(W, H, mu2, lam, minR) {
-  const cx = W / 2, cy = H / 2;
-  const scale = Math.min(W, H) * 0.35;
-  const vscale = 40;
+function scheduleMasahDraw() {
+  masahDirty = true;
+  if (!masahAnimId) {
+    masahAnimId = requestAnimationFrame(drawMasah);
+  }
+}
 
-  // Grid
-  mCtx.strokeStyle = 'rgba(160,160,220,0.06)';
-  mCtx.lineWidth = 1;
-  for (let x = 0; x <= W; x += 40) {
+// ──────────────────────────────────────────────────────────────────────────
+// 2D CROSS-SECTION — fully adaptive to minR and V depth
+// ──────────────────────────────────────────────────────────────────────────
+function draw2DPotential(W, H, mu2, lam, minR) {
+  const pad = { l: 64, r: 40, t: 40, b: 56 };
+  const iW = W - pad.l - pad.r;
+  const iH = H - pad.t - pad.b;
+
+  // ── Determine sensible ψ and V ranges ──────────────────────────────────
+  // Show ±1.6 × minR on ψ axis (minimum nicely centred with room)
+  // Guard against minR = 0 or NaN
+  const safeMinR = (isFinite(minR) && minR > 0) ? minR : 1;
+  const psiHalf  = safeMinR * 1.7;         // half-width of ψ axis
+  const psiMax   = psiHalf;
+
+  // Sample V over the range to auto-scale vertically
+  const N_sample = 300;
+  let vMin = Infinity, vMax = -Infinity;
+  for (let i = 0; i <= N_sample; i++) {
+    const psi = -psiMax + 2 * psiMax * i / N_sample;
+    const vv  = V(psi, mu2, lam);
+    if (vv < vMin) vMin = vv;
+    if (vv > vMax) vMax = vv;
+  }
+  // Add 12% padding on both ends of V axis
+  const vRange = (vMax - vMin) || 1;
+  const vPad   = vRange * 0.12;
+  const vLo    = vMin - vPad;
+  const vHi    = vMax + vPad;
+
+  // ── Mapping helpers ────────────────────────────────────────────────────
+  const toX = psi => pad.l + (psi + psiMax) / (2 * psiMax) * iW;
+  const toY = vv  => pad.t + iH - (vv - vLo) / (vHi - vLo) * iH;
+
+  // ── Background grid ────────────────────────────────────────────────────
+  mCtx.strokeStyle = 'rgba(160,160,220,0.05)';
+  mCtx.lineWidth   = 1;
+  for (let x = 0; x <= W; x += 48) {
     mCtx.beginPath(); mCtx.moveTo(x, 0); mCtx.lineTo(x, H); mCtx.stroke();
   }
   for (let y = 0; y <= H; y += 40) {
     mCtx.beginPath(); mCtx.moveTo(0, y); mCtx.lineTo(W, y); mCtx.stroke();
   }
 
-  // Axes
-  mCtx.strokeStyle = 'rgba(160,160,220,0.2)';
-  mCtx.lineWidth = 1;
-  mCtx.beginPath(); mCtx.moveTo(40, cy); mCtx.lineTo(W - 40, cy); mCtx.stroke();
-  mCtx.beginPath(); mCtx.moveTo(cx, 40); mCtx.lineTo(cx, H - 40); mCtx.stroke();
+  // ── Axes ───────────────────────────────────────────────────────────────
+  const axisV0Y = toY(0);  // where V=0 line is
+  mCtx.strokeStyle = 'rgba(160,160,220,0.22)';
+  mCtx.lineWidth   = 1;
+  // horizontal V=0 axis
+  mCtx.beginPath(); mCtx.moveTo(pad.l, axisV0Y); mCtx.lineTo(pad.l + iW, axisV0Y); mCtx.stroke();
+  // vertical ψ=0 axis
+  mCtx.beginPath(); mCtx.moveTo(toX(0), pad.t); mCtx.lineTo(toX(0), pad.t + iH); mCtx.stroke();
 
-  // Axis labels
-  mCtx.font = '10px Space Mono, monospace';
-  mCtx.fillStyle = 'rgba(160,160,220,0.4)';
+  // ── Axis labels ────────────────────────────────────────────────────────
+  mCtx.font      = '10px Space Mono, monospace';
+  mCtx.fillStyle = 'rgba(160,160,220,0.45)';
   mCtx.textAlign = 'center';
-  mCtx.fillText('ψ', W - 30, cy - 8);
-  mCtx.fillText('V(ψ)', cx + 8, 30);
+  mCtx.fillText('ψ', pad.l + iW + 14, axisV0Y + 4);
+  mCtx.textAlign = 'right';
+  mCtx.fillText('V(ψ)', pad.l - 6, pad.t - 8);
+  mCtx.fillText('0', pad.l - 6, axisV0Y + 4);
 
-  // Minimum ring markers
-  const minX1 = cx - minR * (scale / (minR + 1) * 1.2);
-  const minX2 = cx + minR * (scale / (minR + 1) * 1.2);
-  const minVY = cy - V(minR, mu2, lam) * vscale;
-  mCtx.strokeStyle = 'rgba(201,168,76,0.3)';
-  mCtx.setLineDash([4, 4]);
-  mCtx.lineWidth = 1;
-  mCtx.beginPath(); mCtx.moveTo(minX1, 0); mCtx.lineTo(minX1, H); mCtx.stroke();
-  mCtx.beginPath(); mCtx.moveTo(minX2, 0); mCtx.lineTo(minX2, H); mCtx.stroke();
-  mCtx.beginPath(); mCtx.moveTo(40, minVY); mCtx.lineTo(W - 40, minVY); mCtx.stroke();
+  // ── Minimum orbit dashed markers ───────────────────────────────────────
+  const minVval = V(safeMinR, mu2, lam);
+  const minY    = toY(minVval);
+  const minXpos = toX(safeMinR);
+  const minXneg = toX(-safeMinR);
+
+  mCtx.setLineDash([4, 5]);
+  mCtx.lineWidth   = 1;
+  mCtx.strokeStyle = 'rgba(201,168,76,0.28)';
+  // vertical guides at ±minR
+  mCtx.beginPath(); mCtx.moveTo(minXpos, pad.t); mCtx.lineTo(minXpos, pad.t + iH); mCtx.stroke();
+  mCtx.beginPath(); mCtx.moveTo(minXneg, pad.t); mCtx.lineTo(minXneg, pad.t + iH); mCtx.stroke();
+  // horizontal guide at V_min
+  mCtx.beginPath(); mCtx.moveTo(pad.l, minY); mCtx.lineTo(pad.l + iW, minY); mCtx.stroke();
   mCtx.setLineDash([]);
 
-  // Potential curve
-  const N = 300;
-  const psiMax = minR * 2.5 + 1;
+  // ── Potential curve ────────────────────────────────────────────────────
   mCtx.beginPath();
-  for (let i = 0; i <= N; i++) {
-    const psi = -psiMax + (2 * psiMax * i / N);
-    const vv = V(psi, mu2, lam);
-    const px = cx + psi * (scale / psiMax) * 0.85;
-    const py = cy - vv * vscale;
+  for (let i = 0; i <= N_sample; i++) {
+    const psi = -psiMax + 2 * psiMax * i / N_sample;
+    const px  = toX(psi);
+    const py  = toY(V(psi, mu2, lam));
+    // clip to canvas drawing region
+    if (py < pad.t - 2 || py > pad.t + iH + 2) {
+      mCtx.moveTo(px, Math.max(pad.t, Math.min(pad.t + iH, py)));
+      continue;
+    }
     i === 0 ? mCtx.moveTo(px, py) : mCtx.lineTo(px, py);
   }
-  const grad = mCtx.createLinearGradient(40, 0, W - 40, 0);
-  grad.addColorStop(0, '#e07560');
-  grad.addColorStop(0.5, '#c9a84c');
-  grad.addColorStop(1, '#e07560');
-  mCtx.strokeStyle = grad;
-  mCtx.lineWidth = 2.5;
+  const curveGrad = mCtx.createLinearGradient(pad.l, 0, pad.l + iW, 0);
+  curveGrad.addColorStop(0,   '#e07560');
+  curveGrad.addColorStop(0.5, '#c9a84c');
+  curveGrad.addColorStop(1,   '#e07560');
+  mCtx.strokeStyle = curveGrad;
+  mCtx.lineWidth   = 2.5;
   mCtx.stroke();
 
-  // Minimum dots
-  const dotY = cy - V(minR, mu2, lam) * vscale;
-  [minX1, minX2].forEach(mx => {
+  // ── Minimum dots ───────────────────────────────────────────────────────
+  [minXpos, minXneg].forEach(mx => {
+    // Glow
+    const glow = mCtx.createRadialGradient(mx, minY, 0, mx, minY, 18);
+    glow.addColorStop(0, 'rgba(201,168,76,0.45)');
+    glow.addColorStop(1, 'transparent');
     mCtx.beginPath();
-    mCtx.arc(mx, dotY, 5, 0, Math.PI * 2);
-    mCtx.fillStyle = '#c9a84c';
+    mCtx.arc(mx, minY, 18, 0, Math.PI * 2);
+    mCtx.fillStyle = glow;
     mCtx.fill();
-    const gr2 = mCtx.createRadialGradient(mx, dotY, 0, mx, dotY, 15);
-    gr2.addColorStop(0, 'rgba(201,168,76,0.4)');
-    gr2.addColorStop(1, 'transparent');
+    // Dot
     mCtx.beginPath();
-    mCtx.arc(mx, dotY, 15, 0, Math.PI * 2);
-    mCtx.fillStyle = gr2;
+    mCtx.arc(mx, minY, 5.5, 0, Math.PI * 2);
+    mCtx.fillStyle = '#c9a84c';
     mCtx.fill();
   });
 
-  // ψ=0 unstable top
-  const topY = cy - V(0, mu2, lam) * vscale;
+  // ── ψ=0 unstable maximum dot ───────────────────────────────────────────
+  const topY = toY(V(0, mu2, lam));
+  const cx0  = toX(0);
+  const topGlow = mCtx.createRadialGradient(cx0, topY, 0, cx0, topY, 14);
+  topGlow.addColorStop(0, 'rgba(224,117,96,0.5)');
+  topGlow.addColorStop(1, 'transparent');
   mCtx.beginPath();
-  mCtx.arc(cx, topY, 5, 0, Math.PI * 2);
+  mCtx.arc(cx0, topY, 14, 0, Math.PI * 2);
+  mCtx.fillStyle = topGlow;
+  mCtx.fill();
+  mCtx.beginPath();
+  mCtx.arc(cx0, topY, 5, 0, Math.PI * 2);
   mCtx.fillStyle = '#e07560';
   mCtx.fill();
 
-  // Labels
-  mCtx.font = '10px Space Mono, monospace';
-  mCtx.fillStyle = 'rgba(201,168,76,0.8)';
-  mCtx.textAlign = 'center';
-  mCtx.fillText('minimum (Masah)', minX2 + 55, dotY - 10);
-  mCtx.fillStyle = 'rgba(224,117,96,0.8)';
-  mCtx.fillText('niestabilne ψ=0', cx + 70, topY - 10);
+  // ── Orbit dashed arc ───────────────────────────────────────────────────
+  // Draw the "orbit" as a horizontal ellipse at the minimum height
+  const orbitRx = Math.abs(minXpos - toX(0));
+  if (orbitRx > 2) {
+    mCtx.save();
+    mCtx.setLineDash([3, 6]);
+    mCtx.strokeStyle = 'rgba(201,168,76,0.18)';
+    mCtx.lineWidth = 1;
+    mCtx.beginPath();
+    mCtx.ellipse(toX(0), minY, orbitRx, orbitRx * 0.14, 0, 0, Math.PI * 2);
+    mCtx.stroke();
+    mCtx.setLineDash([]);
+    mCtx.restore();
+  }
 
-  // Orbit arc
-  mCtx.strokeStyle = 'rgba(201,168,76,0.15)';
-  mCtx.lineWidth = 1;
-  mCtx.setLineDash([3, 5]);
-  mCtx.beginPath();
-  mCtx.arc(cx, dotY, Math.abs(minX2 - cx), 0, Math.PI * 2);
-  mCtx.stroke();
-  mCtx.setLineDash([]);
+  // ── Labels ────────────────────────────────────────────────────────────
+  mCtx.font      = '10px Space Mono, monospace';
+  mCtx.textAlign = 'center';
+
+  // minimum label — offset right if near edge
+  let minLabelX = minXpos + 6;
+  if (minLabelX + 90 > pad.l + iW) minLabelX = minXpos - 6;
+  mCtx.fillStyle = 'rgba(201,168,76,0.85)';
+  mCtx.fillText('min (Masah)', minXpos, minY - 14);
+
+  // unstable label
+  mCtx.fillStyle = 'rgba(224,117,96,0.85)';
+  const unstableLabelY = (topY < pad.t + 22) ? topY + 20 : topY - 14;
+  mCtx.fillText('niestabilne ψ=0', cx0, unstableLabelY);
+
+  // ψ axis tick labels
+  mCtx.fillStyle = 'rgba(160,160,220,0.35)';
+  mCtx.textAlign = 'center';
+  mCtx.fillText('+' + safeMinR.toFixed(2), minXpos, pad.t + iH + 18);
+  mCtx.fillText('−' + safeMinR.toFixed(2), minXneg, pad.t + iH + 18);
+  mCtx.fillText('0',  toX(0),              pad.t + iH + 18);
+  mCtx.fillText('ψ',  pad.l + iW + 14,    pad.t + iH + 18);
+
+  // V axis tick labels
+  mCtx.textAlign = 'right';
+  mCtx.fillText(vHi.toFixed(1),    pad.l - 6, pad.t + 14);
+  mCtx.fillText(minVval.toFixed(1), pad.l - 6, minY + 4);
 }
 
+// ──────────────────────────────────────────────────────────────────────────
+// 3D ROTATING HAT — adaptive normalisation
+// ──────────────────────────────────────────────────────────────────────────
 function draw3DPotential(W, H, mu2, lam, minR) {
   const cx = W / 2, cy = H * 0.55;
-  const N = 48;
-  const psiMax = minR * 2.2 + 0.5;
+  const N  = 44;
+  const safeMinR = (isFinite(minR) && minR > 0) ? minR : 1;
+  const psiMax   = safeMinR * 2.1 + 0.3;
 
-  const cos = Math.cos(masahAngle), sin = Math.sin(masahAngle);
+  // Depth of potential well for normalisation
+  const vAtMin  = V(safeMinR, mu2, lam);
+  const vAtZero = V(0, mu2, lam);
+  const vScale  = (vAtZero - vAtMin) || 1;  // always positive
 
-  function project(x, y, z) {
-    const rx = x * cos - y * sin;
-    const ry = x * sin + y * cos;
-    const scale = 160 / (H * 0.6);
+  const cosA = Math.cos(masahAngle), sinA = Math.sin(masahAngle);
+
+  function project(nx, ny, nz) {
+    // nx,ny ∈ [-1,1], nz normalised
+    const rx = nx * cosA - ny * sinA;
+    const ry = nx * sinA + ny * cosA;
     return {
-      sx: cx + rx * W * 0.28,
-      sy: cy - ry * H * 0.12 - z * H * 0.15
+      sx: cx + rx * W * 0.30,
+      sy: cy - ry * H * 0.10 - nz * H * 0.32
     };
   }
 
-  // Compute mesh
+  // Build mesh
   const mesh = [];
   for (let i = 0; i <= N; i++) {
     mesh[i] = [];
     for (let j = 0; j <= N; j++) {
-      const px = -psiMax + 2 * psiMax * i / N;
-      const py = -psiMax + 2 * psiMax * j / N;
-      const r2 = px * px + py * py;
-      const vv = -mu2 * r2 + lam * r2 * r2;
-      const normV = vv / (mu2 * mu2 / lam);
-      mesh[i][j] = { x: px / psiMax, y: py / psiMax, z: normV, v: vv };
+      const px  = -psiMax + 2 * psiMax * i / N;
+      const py  = -psiMax + 2 * psiMax * j / N;
+      const r2  = px * px + py * py;
+      const vv  = -mu2 * r2 + lam * r2 * r2;
+      const nz  = (vv - vAtMin) / vScale;      // 0 at minimum, 1 at top
+      mesh[i][j] = { nx: px / psiMax, ny: py / psiMax, nz, vv };
     }
   }
 
-  // Draw quads back to front
+  // Sort quads back→front
   const quads = [];
   for (let i = 0; i < N; i++) {
     for (let j = 0; j < N; j++) {
-      const pts = [mesh[i][j], mesh[i+1][j], mesh[i+1][j+1], mesh[i][j+1]];
-      const avgZ = (pts[0].z + pts[1].z + pts[2].z + pts[3].z) / 4;
-      const avgV = (pts[0].v + pts[1].v + pts[2].v + pts[3].v) / 4;
-      quads.push({ pts, avgZ, avgV });
+      const pts   = [mesh[i][j], mesh[i+1][j], mesh[i+1][j+1], mesh[i][j+1]];
+      const avgNz = (pts[0].nz + pts[1].nz + pts[2].nz + pts[3].nz) / 4;
+      const avgV  = (pts[0].vv + pts[1].vv + pts[2].vv + pts[3].vv) / 4;
+      quads.push({ pts, avgNz, avgV });
     }
   }
-  quads.sort((a, b) => a.avgZ - b.avgZ);
+  quads.sort((a, b) => a.avgNz - b.avgNz);
 
   quads.forEach(q => {
-    const projected = q.pts.map(p => project(p.x, p.y, p.z));
+    const projected = q.pts.map(p => project(p.nx, p.ny, p.nz));
     mCtx.beginPath();
     mCtx.moveTo(projected[0].sx, projected[0].sy);
     for (let k = 1; k < 4; k++) mCtx.lineTo(projected[k].sx, projected[k].sy);
     mCtx.closePath();
 
-    const t = Math.max(0, Math.min(1, (q.avgV + mu2 * mu2 / lam) / (mu2 * mu2 / lam * 2)));
-    const r = Math.round(78 + (224 - 78) * t);
-    const g = Math.round(205 - 88 * t);
-    const b = Math.round(196 - 100 * t);
-    mCtx.fillStyle = `rgba(${r},${g},${b},0.35)`;
+    // Colour: teal at minimum, coral at rim
+    const t = Math.max(0, Math.min(1, q.avgNz));
+    const r = Math.round(78  + (224 - 78)  * t);
+    const g = Math.round(205 - (205 - 117) * t);
+    const b = Math.round(196 - (196 - 96)  * t);
+    mCtx.fillStyle   = `rgba(${r},${g},${b},0.32)`;
     mCtx.fill();
-    mCtx.strokeStyle = `rgba(${r},${g},${b},0.15)`;
-    mCtx.lineWidth = 0.5;
+    mCtx.strokeStyle = `rgba(${r},${g},${b},0.12)`;
+    mCtx.lineWidth   = 0.5;
     mCtx.stroke();
   });
 
-  // Minimum ring
-  mCtx.strokeStyle = 'rgba(201,168,76,0.6)';
-  mCtx.lineWidth = 2;
+  // Minimum orbit ring
+  const nzMin = 0; // normalised minimum = 0
+  mCtx.strokeStyle = 'rgba(201,168,76,0.7)';
+  mCtx.lineWidth   = 2;
   mCtx.beginPath();
-  for (let k = 0; k <= 64; k++) {
-    const a = k / 64 * Math.PI * 2;
-    const rx = (minR / psiMax) * Math.cos(a);
-    const ry = (minR / psiMax) * Math.sin(a);
-    const rz = V(minR, mu2, lam) / (mu2 * mu2 / lam);
-    const p = project(rx, ry, rz);
+  for (let k = 0; k <= 72; k++) {
+    const a  = k / 72 * Math.PI * 2;
+    const rx = (safeMinR / psiMax) * Math.cos(a);
+    const ry = (safeMinR / psiMax) * Math.sin(a);
+    const p  = project(rx, ry, nzMin);
     k === 0 ? mCtx.moveTo(p.sx, p.sy) : mCtx.lineTo(p.sx, p.sy);
   }
   mCtx.stroke();
+
+  // Top (ψ=0) marker
+  const topP = project(0, 0, 1);
+  const topGlow = mCtx.createRadialGradient(topP.sx, topP.sy, 0, topP.sx, topP.sy, 16);
+  topGlow.addColorStop(0, 'rgba(224,117,96,0.6)');
+  topGlow.addColorStop(1, 'transparent');
+  mCtx.beginPath(); mCtx.arc(topP.sx, topP.sy, 16, 0, Math.PI * 2);
+  mCtx.fillStyle = topGlow; mCtx.fill();
+  mCtx.beginPath(); mCtx.arc(topP.sx, topP.sy, 5, 0, Math.PI * 2);
+  mCtx.fillStyle = '#e07560'; mCtx.fill();
+
+  // Labels
+  mCtx.font      = '10px Space Mono, monospace';
+  mCtx.fillStyle = 'rgba(201,168,76,0.75)';
+  mCtx.textAlign = 'center';
+  mCtx.fillText('min orbit (Masah)', cx, cy + H * 0.32 + 20);
+  mCtx.fillStyle = 'rgba(224,117,96,0.75)';
+  mCtx.fillText('niestabilne ψ=0', topP.sx, topP.sy - 14);
 }
 
-document.getElementById('mu2').addEventListener('input', e => {
-  document.getElementById('mu2-val').textContent = e.target.value;
-});
-document.getElementById('lambda').addEventListener('input', e => {
-  document.getElementById('lambda-val').textContent = e.target.value;
+// ── Slider event listeners — 2D and 3D respond instantly ─────────────────
+['mu2', 'lambda'].forEach(id => {
+  document.getElementById(id).addEventListener('input', e => {
+    document.getElementById(id + '-val').textContent = e.target.value;
+    scheduleMasahDraw();
+  });
 });
 
-// ── VEIL DISSIPATION CANVAS ───────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+// VEIL DISSIPATION CANVAS
+// ══════════════════════════════════════════════════════════════════════════
 const veilCanvas = document.getElementById('veilCanvas');
-const vCtx = veilCanvas.getContext('2d');
-let veilHistory = [];
-let vT = 0;
+const vCtx       = veilCanvas.getContext('2d');
+let veilHistory  = [];
+let vT           = 0;
+let veilAnimId   = null;
+const T_MAX      = 80;   // seconds of simulation
 
 function resetVeil() {
   veilHistory = [];
   vT = 0;
+  scheduleVeilDraw();
 }
 
 function getGamma() {
-  const ew = parseFloat(document.getElementById('ew').value) / 100;
-  const phi0 = parseFloat(document.getElementById('phi0').value) / 100;
-  const gRho = parseFloat(document.getElementById('gradRho').value) / 100;
+  // All sliders: raw value on [1,200], scaled by /1000
+  const ew   = parseFloat(document.getElementById('ew').value)      / 1000;
+  const phi0 = parseFloat(document.getElementById('phi0').value)    / 1000;
+  const gRho = parseFloat(document.getElementById('gradRho').value) / 1000;
   return 2 * ew * phi0 * phi0 * gRho;
 }
 
 function drawVeil() {
-  veilCanvas.width = veilCanvas.offsetWidth;
+  const cssW = veilCanvas.offsetWidth;
+  if (veilCanvas.width !== cssW) veilCanvas.width = cssW;
   const W = veilCanvas.width, H = veilCanvas.height;
+
   const gamma = getGamma();
-  const tau = gamma > 0.001 ? 1 / gamma : 9999;
-  const M0 = 1.0;
-  const dt = 0.02;
+  const tau   = gamma > 1e-9 ? 1 / gamma : Infinity;
+  const dt    = 0.06;
 
   vT += dt;
-  const M = M0 * Math.exp(-gamma * vT);
-  veilHistory.push({ t: vT, M: M });
-  if (veilHistory.length > 400) veilHistory.shift();
+  const M = Math.exp(-gamma * vT);
+  veilHistory.push({ t: vT, M });
+  if (veilHistory.length > 600) veilHistory.shift();
 
   vCtx.clearRect(0, 0, W, H);
   vCtx.fillStyle = '#0a0a0f';
   vCtx.fillRect(0, 0, W, H);
 
+  const pad = { l: 64, r: 32, t: 28, b: 48 };
+  const iW  = W - pad.l - pad.r;
+  const iH  = H - pad.t - pad.b;
+
   // Grid
-  vCtx.strokeStyle = 'rgba(160,160,220,0.06)';
-  vCtx.lineWidth = 1;
-  for (let x = 0; x <= W; x += 50) { vCtx.beginPath(); vCtx.moveTo(x, 0); vCtx.lineTo(x, H); vCtx.stroke(); }
-  for (let y = 0; y <= H; y += 40) { vCtx.beginPath(); vCtx.moveTo(0, y); vCtx.lineTo(W, y); vCtx.stroke(); }
+  vCtx.strokeStyle = 'rgba(160,160,220,0.05)';
+  vCtx.lineWidth   = 1;
+  for (let x = 0; x <= W; x += 50) { vCtx.beginPath(); vCtx.moveTo(x,0); vCtx.lineTo(x,H); vCtx.stroke(); }
+  for (let y = 0; y <= H; y += 40) { vCtx.beginPath(); vCtx.moveTo(0,y); vCtx.lineTo(W,y); vCtx.stroke(); }
 
   // Axes
-  const pad = { l: 60, r: 30, t: 30, b: 50 };
-  const iW = W - pad.l - pad.r, iH = H - pad.t - pad.b;
-  vCtx.strokeStyle = 'rgba(160,160,220,0.25)';
-  vCtx.lineWidth = 1;
-  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t); vCtx.lineTo(pad.l, pad.t + iH); vCtx.stroke();
-  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t + iH); vCtx.lineTo(pad.l + iW, pad.t + iH); vCtx.stroke();
+  vCtx.strokeStyle = 'rgba(160,160,220,0.22)';
+  vCtx.lineWidth   = 1;
+  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t);        vCtx.lineTo(pad.l, pad.t+iH); vCtx.stroke();
+  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t+iH);     vCtx.lineTo(pad.l+iW, pad.t+iH); vCtx.stroke();
 
   // Axis labels
-  vCtx.font = '10px Space Mono, monospace';
+  vCtx.font      = '10px Space Mono, monospace';
   vCtx.fillStyle = 'rgba(160,160,220,0.4)';
   vCtx.textAlign = 'center';
-  vCtx.fillText('t', pad.l + iW, pad.t + iH + 20);
+  vCtx.fillText('t', pad.l+iW+12, pad.t+iH+4);
   vCtx.textAlign = 'right';
-  vCtx.fillText('M(t)', pad.l - 8, pad.t + 8);
-  vCtx.fillText('1.0', pad.l - 4, pad.t + 16);
-  vCtx.fillText('0', pad.l - 4, pad.t + iH + 2);
+  vCtx.fillText('M(t)', pad.l-6, pad.t-6);
+  vCtx.fillText('1.0',  pad.l-6, pad.t+14);
+  vCtx.fillText('0',    pad.l-6, pad.t+iH+4);
 
-  // M=1 line
-  vCtx.strokeStyle = 'rgba(160,160,220,0.12)';
-  vCtx.setLineDash([4, 6]);
-  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t); vCtx.lineTo(pad.l + iW, pad.t); vCtx.stroke();
+  // M=1 dashed
+  vCtx.setLineDash([4,6]);
+  vCtx.strokeStyle = 'rgba(160,160,220,0.1)';
+  vCtx.beginPath(); vCtx.moveTo(pad.l, pad.t); vCtx.lineTo(pad.l+iW, pad.t); vCtx.stroke();
   vCtx.setLineDash([]);
 
-  // Tau line
-  if (tau < 80) {
-    const tauX = pad.l + (tau / 80) * iW;
+  // τ marker
+  if (isFinite(tau) && tau < T_MAX) {
+    const tauX = pad.l + (tau / T_MAX) * iW;
+    vCtx.setLineDash([4,4]);
     vCtx.strokeStyle = 'rgba(201,168,76,0.3)';
-    vCtx.setLineDash([4, 4]);
-    vCtx.beginPath(); vCtx.moveTo(tauX, pad.t); vCtx.lineTo(tauX, pad.t + iH); vCtx.stroke();
+    vCtx.lineWidth = 1;
+    vCtx.beginPath(); vCtx.moveTo(tauX, pad.t); vCtx.lineTo(tauX, pad.t+iH); vCtx.stroke();
     vCtx.setLineDash([]);
-    vCtx.font = '9px Space Mono, monospace';
     vCtx.fillStyle = 'rgba(201,168,76,0.6)';
     vCtx.textAlign = 'center';
-    vCtx.fillText('τ = ' + tau.toFixed(1), tauX, pad.t + iH + 36);
+    vCtx.fillText('τ='+tau.toFixed(1), tauX, pad.t+iH+34);
   }
 
   // M(t) curve
   if (veilHistory.length > 1) {
-    const tMax = 80;
     vCtx.beginPath();
     veilHistory.forEach((pt, i) => {
-      const px = pad.l + (pt.t / tMax) * iW;
+      const px = pad.l + (pt.t / T_MAX) * iW;
       const py = pad.t + iH - pt.M * iH;
-      i === 0 ? vCtx.moveTo(px, py) : vCtx.lineTo(px, py);
+      i === 0 ? vCtx.moveTo(px,py) : vCtx.lineTo(px,py);
     });
-    const lineGrad = vCtx.createLinearGradient(pad.l, 0, pad.l + iW, 0);
-    lineGrad.addColorStop(0, 'rgba(78,205,196,0.9)');
-    lineGrad.addColorStop(0.5, 'rgba(155,114,207,0.7)');
-    lineGrad.addColorStop(1, 'rgba(224,117,96,0.6)');
-    vCtx.strokeStyle = lineGrad;
-    vCtx.lineWidth = 2;
-    vCtx.stroke();
+    const lg = vCtx.createLinearGradient(pad.l, 0, pad.l+iW, 0);
+    lg.addColorStop(0,   'rgba(78,205,196,0.95)');
+    lg.addColorStop(0.5, 'rgba(155,114,207,0.75)');
+    lg.addColorStop(1,   'rgba(224,117,96,0.65)');
+    vCtx.strokeStyle = lg; vCtx.lineWidth = 2.2; vCtx.stroke();
 
-    // Area fill
-    const lastPt = veilHistory[veilHistory.length - 1];
-    const lastX = pad.l + (lastPt.t / tMax) * iW;
-    vCtx.lineTo(lastX, pad.t + iH);
-    vCtx.lineTo(pad.l, pad.t + iH);
+    // Fill under curve
+    const lp = veilHistory[veilHistory.length-1];
+    const lx = pad.l + (lp.t / T_MAX) * iW;
+    vCtx.lineTo(lx, pad.t+iH);
+    vCtx.lineTo(pad.l, pad.t+iH);
     vCtx.closePath();
-    const fillGrad = vCtx.createLinearGradient(0, pad.t, 0, pad.t + iH);
-    fillGrad.addColorStop(0, 'rgba(78,205,196,0.15)');
-    fillGrad.addColorStop(1, 'rgba(78,205,196,0)');
-    vCtx.fillStyle = fillGrad;
-    vCtx.fill();
+    const fg = vCtx.createLinearGradient(0, pad.t, 0, pad.t+iH);
+    fg.addColorStop(0, 'rgba(78,205,196,0.12)');
+    fg.addColorStop(1, 'rgba(78,205,196,0)');
+    vCtx.fillStyle = fg; vCtx.fill();
   }
 
-  // Current M readout
-  const curX = pad.l + (vT / 80) * iW;
-  const curY = pad.t + iH - M * iH;
-  if (curX < pad.l + iW) {
+  // Current point dot
+  const cx = pad.l + (vT / T_MAX) * iW;
+  const cy = pad.t + iH - M * iH;
+  if (cx <= pad.l + iW + 2) {
     vCtx.beginPath();
-    vCtx.arc(curX, curY, 5, 0, Math.PI * 2);
+    vCtx.arc(cx, cy, 5, 0, Math.PI*2);
     vCtx.fillStyle = M > 0.5 ? '#4ecdc4' : M > 0.2 ? '#c9a84c' : '#e07560';
     vCtx.fill();
   }
 
-  // Update readout
-  const ew = parseFloat(document.getElementById('ew').value);
-  const phi0 = parseFloat(document.getElementById('phi0').value);
-  const gRho = parseFloat(document.getElementById('gradRho').value);
+  // Readout
+  const ew_raw   = parseFloat(document.getElementById('ew').value);
+  const phi0_raw = parseFloat(document.getElementById('phi0').value);
+  const gRho_raw = parseFloat(document.getElementById('gradRho').value);
   document.getElementById('veil-readout').innerHTML = `
-    <span>ε_w = ${ew}/100</span>
-    <span style="color:var(--purple)">φ₀ = ${phi0}/100</span>
-    <span style="color:var(--blue)">|∇ρ|² = ${gRho}/100</span>
-    <span style="color:var(--coral)">Γ₀ = ${(gamma * 100).toFixed(3)}</span>
-    <span style="color:var(--gold)">τ = ${tau < 9999 ? tau.toFixed(2) : '∞'}</span>
-    <span style="color:var(--teal)">M(t) = ${M.toFixed(3)}</span>
+    <span>ε_w = ${ew_raw}</span>
+    <span style="color:var(--purple)">φ₀ = ${phi0_raw}</span>
+    <span style="color:var(--blue)">|∇ρ|² = ${gRho_raw}</span>
+    <span style="color:var(--coral)">Γ = ${(gamma * 1e6).toFixed(4)} ×10⁻⁶</span>
+    <span style="color:var(--gold)">τ = ${isFinite(tau) ? tau.toFixed(1) : '∞'}</span>
+    <span style="color:var(--teal)">M(t) = ${M.toFixed(4)}</span>
   `;
 
-  if (vT < 80) requestAnimationFrame(drawVeil);
-  else { vT = 0; veilHistory = []; setTimeout(drawVeil, 500); }
+  if (vT < T_MAX) {
+    veilAnimId = requestAnimationFrame(drawVeil);
+  } else {
+    vT = 0; veilHistory = [];
+    setTimeout(scheduleVeilDraw, 600);
+  }
+}
+
+function scheduleVeilDraw() {
+  if (veilAnimId) { cancelAnimationFrame(veilAnimId); veilAnimId = null; }
+  veilAnimId = requestAnimationFrame(drawVeil);
 }
 
 ['ew', 'phi0', 'gradRho'].forEach(id => {
@@ -943,9 +1089,13 @@ function drawVeil() {
   });
 });
 
-// ── START ─────────────────────────────────────────────────────────────────
-drawMasah();
-drawVeil();
+// ── BOOT ──────────────────────────────────────────────────────────────────
+// Start Masah with a forced first draw
+masahAnimId = requestAnimationFrame(drawMasah);
+scheduleVeilDraw();
+
+// Redraw on window resize
+window.addEventListener('resize', () => { scheduleMasahDraw(); });
 
 // ── SCROLL REVEAL ─────────────────────────────────────────────────────────
 const obs = new IntersectionObserver(entries => {
